@@ -1,0 +1,56 @@
+service: XemHarvestChecker
+
+custom:
+  emailAddress: "sample@example.com" #通知先のメールアドレスを設定
+  accountId: 000000000000 #AWS Account ID
+  IpAddress: "108.61.96.212" #Delegated harvesting remote node's IP address or Host Name
+  RemoteWalletAddress : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" 
+  region: ${opt:region,self:provider.region}
+  topicName: ${self:service}-${opt:stage,self:provider.stage}
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: prod  #default stage, overwrite by --stage option
+  region: ap-northeast-1  #利用するリージョンの設定
+  memorySize: 128 # Overwrite the default memory size. Default is 1024
+  timeout: 12
+  environment:
+    region: ${opt:region,self:provider.region}
+    topicARN: arn:aws:sns:${opt:region,self:provider.region}:${self:custom.accountId}:${self:custom.topicName}
+    IpAddress: ${self:custom.IpAddress}
+    RemoteWalletAddress : ${self:custom.RemoteWalletAddress}
+
+  iamRoleStatements:
+    - Effect: Allow # note that these rights are given in the default policy and are required if you want logs out of your lambda(s)
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "*"
+    -  Effect: Allow
+       Action: "sns:*"
+       Resource: "*"
+
+functions:
+  checkHarvestStatus:
+    handler: handler.checkHarvestStatus
+    events:
+      - schedule: cron(0 13 * * ? *)
+
+resources:
+  Resources:
+    snsTopic:
+       Type: "AWS::SNS::Topic"
+       Properties:
+          DisplayName: "Topic for Xem Remote Node Checker"
+ #         Subscription:
+          TopicName: ${self:custom.topicName}
+
+    snsSubscription:
+       Type: "AWS::SNS::Subscription"
+       Properties:
+          Endpoint: ${self:custom.emailAddress}
+          Protocol: "email"
+          TopicArn:
+            Ref: 'snsTopic'
