@@ -6,7 +6,7 @@
 ## set parameters in serverless.yml
 - `emailAddress: "sample@example.com" #通知先のメールアドレスを設定`
 - `accountId: 000000000000 #AWS Account ID`
-- `IpAddress: "108.61.96.212" #Delegated harvesting remote node's IP address or Host Name`
+- `IpAddress: "XXX.XXX.XXX.XXX" #Delegated harvesting remote node's IP address or Host Name`
 - `RemoteWalletAddress : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ``
 
 ## deploy

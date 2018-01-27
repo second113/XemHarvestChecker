@@ -3,8 +3,8 @@ service: XemHarvestChecker
 custom:
   emailAddress: "sample@example.com" #通知先のメールアドレスを設定
   accountId: 000000000000 #AWS Account ID
-  IpAddress: "108.61.96.212" #Delegated harvesting remote node's IP address or Host Name
-  RemoteWalletAddress : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" 
+  IpAddress: "XXX.XXX.XXX.XXX" #Delegated harvesting remote node's IP address or Host Name
+  RemoteWalletAddress : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
   region: ${opt:region,self:provider.region}
   topicName: ${self:service}-${opt:stage,self:provider.stage}
 
